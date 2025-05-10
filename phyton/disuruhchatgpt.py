@@ -1,4 +1,5 @@
 #NNNNNNNNN inputer
+video_url = "https://www.youtube.com/watch?v=2qBlE2-WL60"
 
 #name = input("siapa nama mu? = ")
 #Yo   = int(input("berapa umur mu? = "))
@@ -106,30 +107,50 @@
 #NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN Hangman NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
 
 import random
-def deteksi_huruf(kata):
-    kata = random.choices["singa","kasur","bunga"]
-    nyawa = 3
-    jhk = 5
+import webbrowser
 
-    while nyawa < 0:
-        inputkata = input("masukan huruf")
-        for huruf in kata:
-                if huruf.isalpha:
-                    if huruf in kata:
-                        True
-                        print("kata benar sisa", jhk,"huruf")
-                else:
-                    nyawa -= 1
-                    print("masukan huruf bukan simbol! -1")
+def permainan_hangman():
+    kata = ["singa", "kasur", "bunga"]
+    kata_terpilih = random.choice(kata)
+    huruf_yang_ditebak = []
+    kata_tertebak = ['_' for _ in kata_terpilih]
+    nyawa = 6
 
+    print("Selamat datang di permainan Hangman!")
+    print("Petunjuk: Jumlah huruf pada kata adalah", len(kata_terpilih))
 
-print("selamat datang di game tebak kata")
-print("clue: jumlah huruf pada kata adalah 5")
+    while nyawa > 0 and '_' in kata_tertebak:
+        print("\nKata: ", ' '.join(kata_tertebak))
+        print("Nyawa tersisa:", nyawa)
+        tebakan = input("Masukkan huruf: ").lower()
 
-input1 = input("masukan huruf ")
-game = deteksi_huruf(input1)
+        if len(tebakan) != 1 or not tebakan.isalpha():
+            print("Masukkan satu huruf saja!")
+            continue
 
+        if tebakan in huruf_yang_ditebak:
+            print("Kamu sudah menebak huruf ini. Coba huruf lain.")
+            continue
 
+        huruf_yang_ditebak.append(tebakan)
 
-      
+        if tebakan in kata_terpilih:
+            print("Tebakan benar!")
+            for idx, huruf in enumerate(kata_terpilih):
+                if huruf == tebakan:
+                    kata_tertebak[idx] = tebakan
+        else:
+            nyawa -= 1
+            print("Tebakan salah! Nyawa berkurang 1.")
+
+    if '_' not in kata_tertebak:
+        print("\nSelamat! Kamu berhasil menebak kata:", kata_terpilih)
+        print("selamat ini hadiahnya")
+        webbrowser.open(video_url)
+
+    else:
+        print("\nKamu kalah! Kata yang benar adalah:", kata_terpilih)
+
+permainan_hangman()
+
 
