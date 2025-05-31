@@ -4,7 +4,8 @@ import random
 import webbrowser
 
 # Stats karakter
-role = "peasant"
+role = None
+killdragon = False
 result = None
 player_stats = {     # ini disebut dictionary (menyimpan data yang banyak dan bisa berbagai jenis)
     'health': 100,   # Kesehatan pemain
@@ -14,12 +15,93 @@ player_stats = {     # ini disebut dictionary (menyimpan data yang banyak dan bi
     'charisma': 7,  # Karisma atau kemampuan berinteraksi
     'inventory': [],  # Barang-barang yang dimiliki pemain
     'level': 1,  # Level karakter
+    'gold':10 #mata uang
 }
+
+def cashout(number):
+    player_stats['gold']  + number
+    type_writer(f"you claimed {number} gold")
+
+def teammate():
+    Mark = {'name': 'Mark', 'health': 80, 'attack': 75}
+    Albert = {'name': 'Albert', 'health': 100, 'attack': 15}
+    Paul = {'name': 'Paul', 'health': 400, 'attack': 5}
+    return Mark, Albert, Paul
+
+def show_team():
+    team = teammate()
+    for member in team:
+        print(f"Name: {member['name']}, Health: {member['health']}, Attack: {member['attack']}")
+
+
+
+    
+
+
+def use_item(item):
+    # Cek apakah item ada di inventori
+    if item in player_stats['inventory']:
+        # Definisikan efek dari setiap item
+        item_effects = {
+            "Health Potion": {"health": 20},
+            "Stamina Elixir": {"stamina": 15},
+            "Strength Amulet": {"strength": 10},
+            "Magic Tome": {"intelligence": 15}
+        }
+
+        # Jika item memiliki efek, terapkan efeknya
+        if item in item_effects:
+            for stat, value in item_effects[item].items():
+                player_stats[stat] += value
+                type_writer(f"You used {item} and gained {value} {stat}!")
+            
+            # Hapus item dari inventori
+            player_stats['inventory'].remove(item)
+        else:
+            type_writer(f"{item} has no effect or is not usable.")
+    else:
+        type_writer(f"You don't have {item} in your inventory.")
+
+owned_cities = ["sterling"]
+
+
+
+def capture_city(city_name):
+    """Mengembalikan kota ke kendali pemain."""
+    if city_name not in owned_cities:
+        owned_cities.append(city_name)
+        type_writer(f"{city_name} is now under your control!")
+    else:
+        type_writer(f"{city_name} is already under your control.")
+
+cities_warmoth = [
+    "Blackreach",      # Kota utama yang dikelilingi kabut hitam
+    "Gloomspire",      # Kota menara tinggi tempat penyihir gelap berkumpul
+    "Ravenmoor",       # Kota di tengah rawa penuh burung gagak
+    "Duskhaven",       # Kota pelabuhan yang selalu diselimuti senja
+    "Ironhold",        # Kota benteng bekas pertempuran besar
+    "Wraithfall",      # Kota hantu yang muncul saat bulan purnama
+    "Bloodstone",      # Kota tambang batu darah yang terkutuk
+    "Ashenvale",       # Kota mati di tengah hutan terbakar
+    "Necroth",         # Kota necromancer yang tersembunyi di lembah
+    "Shadowfen",       # Kota rawa penuh racun dan makhluk kegelapan
+    "Embergrave",      # Kota bekas peradaban yang sekarang jadi puing
+    "Grimkeep",        # Kota benteng tempat para kesatria kegelapan
+    "Frostbound",      # Kota es yang ditinggalkan setelah perang besar
+    "Mournhold",       # Kota berkabung yang selalu turun hujan
+    "Vilebrook",       # Kota sungai beracun tempat klan pencuri bersembunyi
+    "Thorncrest",      # Kota berduri di pegunungan terjal
+    "Soulhaven",       # Kota pengasingan bagi jiwa-jiwa tersesat
+    "Darkveil",        # Kota tersembunyi di balik kabut tebal
+    "Cryptwatch",      # Kota pemakaman besar yang dijaga undead
+    "Voidspire",       # Kota menara iblis yang muncul di tengah padang pasir
+]
 
 # Fungsi untuk menampilkan stats pemain
 def show_stats():
     print("\n--- Player Stats ---")
     print(f"Health: {player_stats['health']}")
+    print(f"Health: {player_stats['gold']}")
     print(f"Strength: {player_stats['strength']}")
     print(f"Intelligence: {player_stats['intelligence']}")
     print(f"Stamina: {player_stats['stamina']}")
@@ -28,6 +110,10 @@ def show_stats():
     print(f"Inventory: {', '.join(player_stats['inventory']) if player_stats['inventory'] else 'Empty'}")
     print("---------------------\n")
 
+def recover_health():
+    type_writer("you just got healed/revive")
+    player_stats['health'] = 100
+
 # Fungsi untuk mengetikkan teks secara perlahan
 def type_writer(text, delay=0.05):
     for char in text:
@@ -35,6 +121,7 @@ def type_writer(text, delay=0.05):
         sys.stdout.flush()
         time.sleep(delay)
     print()
+
 
 # Permainan dimulai
 print("Welcome to my game")
@@ -217,6 +304,7 @@ if ask.lower() == "yes":
             type_writer(f"You defeated the {dummy['name']}! Well done, soldier!")
             player_stats['level'] += 1
             type_writer(f"Your level increased to {player_stats['level']}!")
+            recover_health()
             question()
 
     
@@ -290,7 +378,7 @@ if ask.lower() == "yes":
             player_stats['stamina'] += 10
             type_writer("You chose the Knight. A balanced warrior with strong defense.")
             type_writer(f"Strength: {player_stats['strength']}, Health: {player_stats['health']}, Stamina: {player_stats['stamina']}")
-            return "Knight", player_stats
+            change_role("Knight")
             gowar()
 
 
@@ -309,7 +397,7 @@ if ask.lower() == "yes":
             player_stats['stamina'] += 5
             type_writer("You chose the Mage. Master of destructive magic.")
             type_writer(f"Intelligence: {player_stats['intelligence']}, Health: {player_stats['health']}, Stamina: {player_stats['stamina']}")
-            return "Mage", player_stats
+            change_role("Mage")
             mage()
 
         elif role == "4":
@@ -318,7 +406,7 @@ if ask.lower() == "yes":
             player_stats['stamina'] += 5
             type_writer("You chose the Berserker. A raging powerhouse with little defense.")
             type_writer(f"Strength: {player_stats['strength']}, Health: {player_stats['health']}, Stamina: {player_stats['stamina']}")
-            return "Berserker", player_stats
+            change_role("Berseker")
             gowar()
 
         else:
@@ -361,6 +449,8 @@ if ask.lower() == "yes":
 
         # Kembali ke latihan
         type_writer("Mage: 'Good job. youre ready enough to go to frontline.'")
+        player_stats['stamina'] == 20
+        player_stats['stamina'] += 60
         time.sleep(2)
         gowar()
 
@@ -414,16 +504,16 @@ if ask.lower() == "yes":
 
 
     def gowar():
-        #NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
-        #NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
-        #NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
-        role ,player_stats = choose_role()  #not testen yet
-        #NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
-        #NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
-        #NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+        global role, player_stats
+        type_writer(f"you cam inside the field by using {role}")
+
         type_writer("You step into the battlefield. The air is thick with the scent of blood and steel.")
         time.sleep(2)
+
+        
         enemy = {"name": "Enemy Soldier", "health": 100, "attack": 15}
+
+        enemycount = 5
 
 
 
@@ -432,73 +522,401 @@ if ask.lower() == "yes":
                 
         type_writer(f"You are fighting as a {role}!")
 
-        while enemy["health"] > 0 and player_stats["health"] > 0:
-            type_writer(f"Enemy health: {enemy['health']}")
-            type_writer(f"Your health: {player_stats['health']}")
-            type_writer("1. Attack")
-            type_writer("2. Special Ability")
-            action = input("Choose your action (1/2): ").strip()
+        while enemycount > 0:
 
-        # Sistem serangan dan kemampuan khusus berdasarkan role
-            if action == "1":
-                if role == "Knight":
-                    damage == player_stats['strength'] + random.randint(10, 20)
-                elif role == "Cavalry":
-                    damage = player_stats['strength'] + random.randint(20, 30)
-                elif role == "Mage":
-                    damage = player_stats['intelligence'] + random.randint(30, 40)
-                elif role == "Berserker":
-                    damage = player_stats['strength'] + random.randint(30, 50)
+            while enemy["health"] > 0 and player_stats["health"] > 0:
+                type_writer(f"Enemy health: {enemy['health']}")
+                type_writer(f"Your health: {player_stats['health']}")
+                type_writer("1. Attack")
+                type_writer("2. Special Ability")
+                action = input("Choose your action (1/2): ").strip()
 
-                enemy["health"] -= damage
-                type_writer(f"You dealt {damage} damage to the {enemy['name']}!")
+            # Sistem serangan dan kemampuan khusus berdasarkan role
+                if action == "1":
+                    if role == "Knight":
+                        damage == player_stats['strength'] + random.randint(10, 20)
+                    elif role == "Cavalry":
+                        damage = player_stats['strength'] + random.randint(20, 30)
+                    elif role == "Mage":
+                        damage = player_stats['intelligence'] + random.randint(30, 40)
+                    elif role == "Berserker":
+                        damage = player_stats['strength'] + random.randint(30, 50)
 
-            elif action == "2":
-                if role == "Knight":
-                    type_writer("You raise your shield, blocking the next attack completely!")
-                    player_stats["stamina"] -= 5
-                    enemy["attack"] = 0
-
-                elif role == "Cavalry":
-                    type_writer("You charge with your spear, delivering a devastating blow!")
-                    damage = player_stats['strength'] * 2
                     enemy["health"] -= damage
-                    player_stats["stamina"] -= 10
-                    type_writer(f"You dealt {damage} damage but lost 10 stamina!")
+                    type_writer(f"You dealt {damage} damage to the {enemy['name']}!")
 
-                elif role == "Mage":
-                    type_writer("You cast a powerful spell, burning the enemy!")
-                    damage = player_stats['intelligence'] * 1.5
-                    enemy["health"] -= damage
-                    player_stats["stamina"] -= 5
-                    type_writer(f"You dealt {damage} magic damage but lost 5 stamina!")
+                elif action == "2":
+                    if role == "Knight":
+                        type_writer("You raise your shield, blocking the next attack completely!")
+                        player_stats["stamina"] -= 5
+                        enemy["attack"] = 0
 
-                elif role == "Berserker":
-                    type_writer("You enter a frenzied state, striking wildly!")
-                    damage = player_stats['strength'] * 1.8
-                    enemy["health"] -= damage
-                    player_stats["health"] -= 10
-                    type_writer(f"You dealt {damage} damage but also hurt yourself!")
+                    elif role == "Cavalry":
+                        type_writer("You charge with your spear, delivering a devastating blow!")
+                        damage = player_stats['strength'] * 2
+                        enemy["health"] -= damage
+                        player_stats["stamina"] -= 10
+                        type_writer(f"You dealt {damage} damage but lost 10 stamina!")
 
-            else:
-                type_writer("Invalid choice. Try again.")
-                continue
+                    elif role == "Mage":
+                        type_writer("You cast a powerful spell, burning the enemy!")
+                        damage = player_stats['intelligence'] * 1.5
+                        enemy["health"] -= damage
+                        player_stats["stamina"] -= 5
+                        type_writer(f"You dealt {damage} magic damage but lost 5 stamina!")
 
-            # Musuh menyerang
-            if enemy["health"] > 0:
-                player_stats["health"] -= enemy["attack"]
-                type_writer(f"The {enemy['name']} attacks! You lost {enemy['attack']} health.")
+                    elif role == "Berserker":
+                        type_writer("You enter a frenzied state, striking wildly!")
+                        damage = player_stats['strength'] * 1.8
+                        enemy["health"] -= damage
+                        player_stats["health"] -= 10
+                        type_writer(f"You dealt {damage} damage but also hurt yourself!")
+
+                else:
+                    type_writer("Invalid choice. Try again.")
+                    continue
+
+                # Musuh menyerang
+                if enemy["health"] > 0:
+                    player_stats["health"] -= enemy["attack"]
+                    type_writer(f"The {enemy['name']} attacks! You lost {enemy['attack']} health.")
+
+                elif enemy["health"] <= 0 and enemycount > 0:
+                    enemy['health'] = 100
+                    enemycount -= 1
+                    type_writer(f"new enemy attack you. there is {enemycount} enemy left")
+                    continue
+
+
+                elif enemy["health"] <= 0 and enemycount <= 0:
+                    recover_health()
+                    break
+
 
     # Hasil pertempuran
         if player_stats["health"] > 0:
             type_writer(f"Victory! You defeated the {enemy['name']}!")
             player_stats["level"] += 3
             type_writer(f"Your level increased to {player_stats['level']}!")
+            time.sleep(2)
+            type_writer("you have defeated the last enemy in Voidspire")
+            capture_city("Voidspire")
+            cashout(80)
+            town()
         else:
             type_writer("You have been defeated... The battlefield grows silent.")
 
 
-game()
+    def town():
+        if killdragon == False:
+            type_writer("kill the dragon reward: lots of gold")
+        elif killdragon == True:
+            choosetown()
+            
+    def choosetown():
+        type_writer("what do you want to do?")
+        print("1.shop")
+        print("2.hunt goblin")
+        print("3.mount a dragon")
+        print("4.check stats")
+        print("5.do mission")
+
+        towner = input("choose the number you want")
+
+        if towner == "1":
+            shop()
+        
+        elif towner == "2":
+            hunt()
+
+        elif towner == "3":
+            dragon_fight()
+
+        elif towner == "4":
+            show_stats()
+            town()
+        
+        elif towner == "5":
+            continue2()
+
+        else:
+            print("invalid input")
+            return town()
+
+
+    def shop():
+        type_writer("Welcome to the shop! Here, you can buy items to aid you in battle.")
+        time.sleep(1)
+
+        # Daftar barang di shop
+        items = {
+           '1': {'name': 'Health Potion', 'price': 50, 'effect': {'health': 20}},
+            '2': {'name': 'Stamina Elixir', 'price': 30, 'effect': {'stamina': 15}},
+            '3': {'name': 'Strength Amulet', 'price': 100, 'effect': {'strength': 10}},
+            '4': {'name': 'Magic Tome', 'price': 120, 'effect': {'intelligence': 15}},
+            '5': {'name': 'Exit Shop', 'price': 0, 'effect': {}}
+        }
+
+        while True:
+            # Menampilkan barang di shop
+            type_writer("Available items:")
+            for key, item in items.items():
+                type_writer(f"{key}. {item['name']} - {item['price']} gold")
+
+            # Memilih barang
+            choice = input("Choose an item to buy (1-5): ")
+
+            if choice in items:
+                item = items[choice]
+
+                if choice == '5':
+                    type_writer("You exited the shop.")
+                    town()
+
+                if player_stats['gold'] >= item['price']:
+                    player_stats['gold'] -= item['price']
+                    for stat, value in item['effect'].items():
+                        player_stats[stat] += value
+                    add_to_inventory(item['name'])
+                    type_writer(f"You bought {item['name']}!")
+                    type_writer(f"Your current stats: {player_stats}")
+                else:
+                    type_writer("Not enough gold!")
+            else:
+                type_writer("Invalid choice. Try again.")
+
+    def hunt():
+        hunter = random.randint(20, 30)
+        type_writer("A goblin appears in front of you.")
+        time.sleep(1)
+
+        goblin = {'name': 'Goblin', 'health': 30, 'attack': 5}
+
+        # Multiplier untuk strength
+        strength_multiplier = 0.5
+
+        # Mulai mini-game bertarung
+        while goblin['health'] > 0 and player_stats['health'] > 0:
+            type_writer(f"{goblin['name']} health: {goblin['health']}")
+            type_writer(f"Your health: {player_stats['health']}")
+            type_writer(f"Your strength: {player_stats['strength']}")
+            type_writer("What will you do?")
+            type_writer("1. Attack")
+            type_writer("2. Defend")
+            choice = input("Choose an action (1/2): ")
+
+            if choice == "1":
+                # Hitung damage berdasarkan strength
+                base_damage = random.randint(5, 10)
+                damage = base_damage + int(player_stats['strength'] * strength_multiplier)
+                goblin['health'] -= damage
+                type_writer(f"You dealt {damage} damage to {goblin['name']}!")
+            
+            elif choice == "2":
+             # Pertahanan
+                defense = random.randint(2, 5)
+                reduced_damage = max(goblin['attack'] - defense, 0)
+                player_stats['health'] -= reduced_damage
+                type_writer(f"You blocked the attack, reducing damage by {defense}.")
+            else:
+                type_writer("Invalid choice! Try again.")
+
+            # Dummy menyerang
+            if goblin['health'] > 0:
+                player_stats['health'] -= goblin['attack']
+                type_writer(f"{goblin['name']} attacks! You lost {goblin['attack']} health.")
+
+            # Cek jika pemain kalah
+            if player_stats['health'] <= 0:
+                type_writer("You have been defeated!.")
+                hospital()
+
+        # Jika dummy kalah
+        if goblin['health'] <= 0:
+            type_writer(f"You defeated the {goblin['name']}! Well done, soldier!")
+            player_stats['level'] += 1
+            type_writer(f"Your level increased to {player_stats['level']}!")
+            recover_health()
+            cashout(hunter)
+            town()
+
+    def hospital():
+        type_writer("doctor plague:ahh litle cut and make stitches there and...")
+        time.sleep(2)
+        type_writer("doctor plague:done")
+        recover_health()
+        type_writer("doctor plague:you can go back to the town")
+        time.sleep(1)
+        type_writer(f"{name}: thankyou doc")
+        town()
+
+    def dragon_fight():
+        global killdragon
+        type_writer("You hear a thunderous roar as a massive dragon descends before you!")
+        time.sleep(2)
+
+        # Dragon Stats
+        dragon = {
+            'name': 'Fire Dragon',
+            'health': 10000,
+            'attack': 25,
+            'burn_chance': 0.3  # 30% chance to inflict burn
+        }
+
+        # Burn effect state
+        burn_effect = 0
+
+        while dragon['health'] > 0 and player_stats['health'] > 0:
+            type_writer(f"Dragon Health: {dragon['health']}")
+            type_writer(f"Your Health: {player_stats['health']}")
+            type_writer("1. Attack")
+            type_writer("2. Defend")
+            type_writer("3. Use Item")
+
+            choice = input("Choose your action (1/2/3): ").strip()
+
+            # Player's turn
+            if choice == "1":
+                # Regular Attack
+                damage = player_stats['strength'] + random.randint(10, 20)
+                dragon['health'] -= damage
+                type_writer(f"You strike the dragon for {damage} damage!")
+
+            elif choice == "2":
+                # Defend
+                type_writer("You brace yourself, reducing incoming damage by half.")
+                player_stats['stamina'] -= 5
+
+            elif choice == "3":
+            # Use Item
+                if player_stats['inventory']:
+                    item = input("Enter the name of the item to use: ").strip()
+                    if item in player_stats['inventory']:
+                        use_item(item)
+                    else:
+                        type_writer("You don't have that item!")
+                else:
+                    type_writer("Your inventory is empty!")
+            else:
+                type_writer("Invalid choice. Try again.")
+                continue
+
+            # Dragon's turn
+            if dragon['health'] > 0:
+                if choice == "2":
+                    damage = dragon['attack'] // 2
+                else:
+                    damage = dragon['attack']
+
+                player_stats['health'] -= damage
+                type_writer(f"The dragon breathes fire at you, dealing {damage} damage!")
+
+                # Burn effect
+                if random.random() < dragon['burn_chance']:
+                    burn_effect = 3  # Burn lasts for 3 turns
+                    type_writer("You are burned by the dragon's flames! You will take 5 damage each turn.")
+
+            # Apply burn damage
+            if burn_effect > 0:
+                player_stats['health'] -= 5
+                type_writer("The burn sears your flesh, dealing 5 damage!")
+                burn_effect -= 1
+
+        # End of battle
+        if player_stats['health'] > 0:
+            type_writer("Victory! You have slain the Fire Dragon!")
+            reward_gold = random.randint(1000, 2000)
+            player_stats['gold'] += reward_gold
+            type_writer(f"You receive {reward_gold} gold as loot!")
+            add_to_inventory("Dragon Scale")
+            player_stats['level'] += 10
+            type_writer(f"Your level has increased to {player_stats['level']}!")
+            killdragon = True
+            town()
+        else:
+            type_writer("You have been defeated by the Fire Dragon...")
+            hospital()
+
+    def continue2():
+        locals 
+        type_writer(f"raider:hey {name} i will introduce you to your new friends")
+        time.sleep(2)
+        type_writer(f"{name}:who are they?")
+        time.sleep(2)
+        type_writer(f"raider:there is Mark,albert,and paul")
+        time.sleep(2)
+        type_writer("mark: hi im mark I am a beserker")
+        type_writer("Albert: greetings im Albert I am a knight")
+        type_writer("hallo, ich bin Paul, ich bin ein Tanker")
+        time.sleep(2)
+
+        type_writer(f"{name}: Who do you want to know more about?")
+        time.sleep(2)
+        type_writer("1. Mark")
+        time.sleep(1)
+        type_writer("2. Albert")
+        time.sleep(1)
+        type_writer("3. Paul")
+        time.sleep(1)
+        type_writer("4.continue story")
+        pilihan()
+
+    def pilihan():
+    
+        choice = input("Enter the number of your choice (1/2/3): ")
+        if choice == "1":
+            mark()
+            time.sleep(2)
+        elif choice == "2":
+            albert()
+            time.sleep(2)
+        elif choice == "3":
+            paul()
+            time.sleep(2)
+        elif choice == "4":
+            war3()
+        else:
+            type_writer("Raider: That's not a valid choice. Please choose a number between 1 and 3.")
+            time.sleep(2)
+
+    def mark():
+        type_writer("Mark hails from Sterling, a merchant city now in ruins under the shadow of Warmoth, a brutal empire ruled by King Alaric, a power-hungry ruler who obliges with the power of the Abyss.")
+        time.sleep(12)
+        type_writer("Sterling was once a neutral city, a wealthy trading hub that was not aligned with any kingdom. However, King Alaric of Warmoth saw Sterling’s potential as a source of Abyss Artifacts, cursed objects believed to grant their wielders unlimited power.")
+        time.sleep(21)
+        type_writer("King Alaric began sending shadow armies to Sterling, infiltrating underground markets in search of Soul Relics, legendary artifacts said to open the gates of the Abyss and grant complete control over the creatures of darkness.")
+        time.sleep(18)
+        type_writer("Mark, a simple blacksmith’s son, had never cared much for politics until that dark night. Warmoth’s forces invaded Sterling, slaughtering its inhabitants and burning homes in search of Soul Relics. Mark watched as his father was shown the Blood Sword, a cursed weapon created to be the key to unlocking the Abyss.")
+        time.sleep(35)
+        type_writer("In the chaos, Mark's father was killed by General Vaelis, King Alaric's right-hand man known as the Soul Hunter. General Vaelis took the Blood Sword and left Sterling in his ward.")
+        time.sleep(12)
+        type_writer("Now, Mark wanders with the determination to take revenge on Warmoth and King Alaric. With a weapon his father made — a rusty greatsword bound with the curse of the Abyss — Mark fights to thwart King Alaric's plans to open the Abyss and become ruler of the world of darkness.")
+        time.sleep(28)
+        type_writer("However, the closer he got to Warmoth, the stronger the voices of the Abyss whispered in his head, forcing him to give in and become a true instrument of destruction.")
+
+        input2 = input("press f to continue")
+
+
+    def albert():
+        
+
+        if input2.lower() == "f" :
+            pilihan()
+            
+            
+
+
+
+
+
+
+        
+
+
+
+
+
+
 
 
 
