@@ -58,9 +58,9 @@
 #    print(urut + 1, item)
 
 ##################################### GRID
-for i in range(1,5):
-    for j in range(0):     
-        print("#", end="")
-        
-     
-    print("#" * i)                
+#for i in range(1,5):
+#    for j in range(0):     
+#        print("#", end="")
+#        
+#     
+#    print("#" * i)                
