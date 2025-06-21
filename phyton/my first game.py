@@ -126,7 +126,7 @@ def type_writer(text, delay=0.05):
 # Permainan dimulai
 print("Welcome to my game")
 video_url = "https://www.youtube.com/watch?v=2qBlE2-WL60"
-developer = "developer: Agape"
+developer = "developer: Aga"
 if developer != "developer: Agape":
     type_writer("this game is hacked the real developer is Agape")
     webbrowser.open(video_url)
@@ -839,69 +839,11 @@ if ask.lower() == "yes":
 
     def continue2():
         locals 
-        type_writer(f"raider:hey {name} i will introduce you to your new friends")
+        type_writer(f"raider:hey {name} i have a mission for you to save the prince on Gloomspire")
         time.sleep(2)
-        type_writer(f"{name}:who are they?")
-        time.sleep(2)
-        type_writer(f"raider:there is Mark,albert,and paul")
-        time.sleep(2)
-        type_writer("mark: hi im mark I am a beserker")
-        type_writer("Albert: greetings im Albert I am a knight")
-        type_writer("hallo, ich bin Paul, ich bin ein Tanker")
-        time.sleep(2)
-
-        type_writer(f"{name}: Who do you want to know more about?")
-        time.sleep(2)
-        type_writer("1. Mark")
-        time.sleep(1)
-        type_writer("2. Albert")
-        time.sleep(1)
-        type_writer("3. Paul")
-        time.sleep(1)
-        type_writer("4.continue story")
-        pilihan()
-
-    def pilihan():
-    
-        choice = input("Enter the number of your choice (1/2/3): ")
-        if choice == "1":
-            mark()
-            time.sleep(2)
-        elif choice == "2":
-            albert()
-            time.sleep(2)
-        elif choice == "3":
-            paul()
-            time.sleep(2)
-        elif choice == "4":
-            war3()
-        else:
-            type_writer("Raider: That's not a valid choice. Please choose a number between 1 and 3.")
-            time.sleep(2)
-
-    def mark():
-        type_writer("Mark hails from Sterling, a merchant city now in ruins under the shadow of Warmoth, a brutal empire ruled by King Alaric, a power-hungry ruler who obliges with the power of the Abyss.")
-        time.sleep(12)
-        type_writer("Sterling was once a neutral city, a wealthy trading hub that was not aligned with any kingdom. However, King Alaric of Warmoth saw Sterling’s potential as a source of Abyss Artifacts, cursed objects believed to grant their wielders unlimited power.")
-        time.sleep(21)
-        type_writer("King Alaric began sending shadow armies to Sterling, infiltrating underground markets in search of Soul Relics, legendary artifacts said to open the gates of the Abyss and grant complete control over the creatures of darkness.")
-        time.sleep(18)
-        type_writer("Mark, a simple blacksmith’s son, had never cared much for politics until that dark night. Warmoth’s forces invaded Sterling, slaughtering its inhabitants and burning homes in search of Soul Relics. Mark watched as his father was shown the Blood Sword, a cursed weapon created to be the key to unlocking the Abyss.")
-        time.sleep(35)
-        type_writer("In the chaos, Mark's father was killed by General Vaelis, King Alaric's right-hand man known as the Soul Hunter. General Vaelis took the Blood Sword and left Sterling in his ward.")
-        time.sleep(12)
-        type_writer("Now, Mark wanders with the determination to take revenge on Warmoth and King Alaric. With a weapon his father made — a rusty greatsword bound with the curse of the Abyss — Mark fights to thwart King Alaric's plans to open the Abyss and become ruler of the world of darkness.")
-        time.sleep(28)
-        type_writer("However, the closer he got to Warmoth, the stronger the voices of the Abyss whispered in his head, forcing him to give in and become a true instrument of destruction.")
-
-        input2 = input("press f to continue")
+        type_writer("you cant deny this operation beacuse this command is from the mighty king")
 
 
-    def albert():
-        
-
-        if input2.lower() == "f" :
-            pilihan()
             
             
 
