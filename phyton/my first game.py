@@ -126,7 +126,7 @@ def type_writer(text, delay=0.05):
 # Permainan dimulai
 print("Welcome to my game")
 video_url = "https://www.youtube.com/watch?v=2qBlE2-WL60"
-developer = "developer: Aga"
+developer = "developer: Agape"
 if developer != "developer: Agape":
     type_writer("this game is hacked the real developer is Agape")
     webbrowser.open(video_url)
@@ -842,6 +842,8 @@ if ask.lower() == "yes":
         type_writer(f"raider:hey {name} i have a mission for you to save the prince on Gloomspire")
         time.sleep(2)
         type_writer("you cant deny this operation beacuse this command is from the mighty king")
+        time.sleep(2)
+        type_writer("here take this armor")
 
 
             
